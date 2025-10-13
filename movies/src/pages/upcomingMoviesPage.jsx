@@ -3,6 +3,7 @@ import PageTemplate from "../components/templateMovieListPage";
 import { useQuery } from "@tanstack/react-query";
 import Spinner from "../components/spinner";
 import { getUpcomingMovies } from "../api/tmdb-api";
+import PlaylistAdd from "../components/cardIcons/playlistAdd";
 
 const UpcomingMoviesPage = () => {
   const { data, error, isPending, isError } = useQuery({
@@ -18,14 +19,13 @@ const UpcomingMoviesPage = () => {
     return <h1>{error.message}</h1>;
   }
 
-  
   const movies = data.results || [];
 
   return (
     <PageTemplate
       title="Upcoming Movies"
       movies={movies}
-      action={() => null}
+      action={(movie) => <PlaylistAdd movie={movie} />}
     />
   );
 };
