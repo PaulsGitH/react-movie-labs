@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -13,14 +13,21 @@ import IconButton from "@mui/material/IconButton";
 import Grid from "@mui/material/Grid";
 import Avatar from "@mui/material/Avatar";
 import { Link } from "react-router";
-import img from '../../images/film-poster-placeholder.png'
+import img from "../../images/film-poster-placeholder.png";
+import { MoviesContext } from "../../contexts/moviesContext";
 
-export default function MovieCard(props) {
-  const movie = props.movie;
+export default function MovieCard({ movie }) {
+  const { favorites, addToFavorites } = useContext(MoviesContext);
+
+  if (favorites.find((id) => id === movie.id)) {
+    movie.favorite = true;
+  } else {
+    movie.favorite = false;
+  }
 
   const handleAddToFavorite = (e) => {
     e.preventDefault();
-    props.selectFavorite(movie.id);
+    addToFavorites(movie);
   };
 
   return (
@@ -28,7 +35,7 @@ export default function MovieCard(props) {
       <CardHeader
         avatar={
           movie.favorite ? (
-            <Avatar sx={{ backgroundColor: 'red' }}>
+            <Avatar sx={{ backgroundColor: "red" }}>
               <FavoriteIcon />
             </Avatar>
           ) : null
@@ -38,6 +45,7 @@ export default function MovieCard(props) {
             {movie.title}{" "}
           </Typography>
         }
+        sx={{ textWrap: "nowrap" }}
       />
       <CardMedia
         sx={{ height: 500 }}
@@ -49,13 +57,13 @@ export default function MovieCard(props) {
       />
       <CardContent>
         <Grid container>
-          <Grid size={{xs: 6}}>
+          <Grid size={{ xs: 6 }}>
             <Typography variant="h6" component="p">
               <CalendarIcon fontSize="small" />
               {movie.release_date}
             </Typography>
           </Grid>
-          <Grid size={{xs: 6}}>
+          <Grid size={{ xs: 6 }}>
             <Typography variant="h6" component="p">
               <StarRateIcon fontSize="small" />
               {"  "} {movie.vote_average}{" "}
