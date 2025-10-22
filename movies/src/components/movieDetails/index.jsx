@@ -74,6 +74,13 @@ const MovieDetails = ({ movie }) => {
         </Button>
       </Link>
 
+      <Link to={`/movies/${movie.id}/credits`}>
+        <Button variant="outlined" sx={{ mt: 1, ml: 1 }}>
+          Cast & Crew
+        </Button>
+      </Link>
+
+
 
       {/* Production Countries */}
       <Paper component="ul" sx={{ ...root }}>
