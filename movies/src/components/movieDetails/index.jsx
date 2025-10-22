@@ -9,6 +9,9 @@ import Fab from "@mui/material/Fab";
 import Typography from "@mui/material/Typography";
 import Drawer from "@mui/material/Drawer";
 import MovieReviews from "../movieReviews";
+import { Link } from "react-router";
+import Button from "@mui/material/Button";
+
 
 const root = {
   display: "flex",
@@ -58,6 +61,13 @@ const MovieDetails = ({ movie }) => {
         />
         <Chip label={`Released: ${movie.release_date}`} />
       </Paper>
+
+      <Link to={`/movies/${movie.id}/recommendations`}>
+        <Button variant="outlined" sx={{ mt: 1 }}>
+          Recommendations
+        </Button>
+      </Link>
+
 
       {/* Production Countries */}
       <Paper component="ul" sx={{ ...root }}>
