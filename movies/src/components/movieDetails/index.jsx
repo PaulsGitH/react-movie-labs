@@ -68,6 +68,12 @@ const MovieDetails = ({ movie }) => {
         </Button>
       </Link>
 
+      <Link to={`/movies/${movie.id}/similar`}>
+        <Button variant="outlined" sx={{ mt: 1, ml: 1 }}>
+          Similar
+        </Button>
+      </Link>
+
 
       {/* Production Countries */}
       <Paper component="ul" sx={{ ...root }}>
