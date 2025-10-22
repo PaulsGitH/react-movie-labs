@@ -255,3 +255,36 @@ export const getPersonMovieCredits = ({ queryKey }) => {
     return response.json();
   }).catch((error) => { throw error; });
 };
+
+export const getCompany = ({ queryKey }) => {
+  const [, { id }] = queryKey;
+  return fetch(
+    `https://api.themoviedb.org/3/company/${id}?api_key=${import.meta.env.VITE_TMDB_KEY}`
+  )
+    .then(async (res) => {
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.status_message || `Company ${id} not found`);
+      }
+      return res.json();
+    })
+    .catch((e) => {
+      throw e;
+    });
+};
+
+
+export const getCompanyMovies = ({ queryKey }) => {
+  const [, idPart] = queryKey;
+  const { id } = idPart;
+  return fetch(
+    `https://api.themoviedb.org/3/discover/movie?api_key=${import.meta.env.VITE_TMDB_KEY}&with_companies=${id}&language=en-US&page=1`
+  ).then((response) => {
+    if (!response.ok) {
+      return response.json().then((error) => {
+        throw new Error(error.status_message || "Something went wrong");
+      });
+    }
+    return response.json();
+  }).catch((error) => { throw error; });
+};

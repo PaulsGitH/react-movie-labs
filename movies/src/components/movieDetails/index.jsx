@@ -48,6 +48,20 @@ const MovieDetails = ({ movie }) => {
         ))}
       </Paper>
 
+      <Paper component="ul" sx={{ ...root }}>
+        <li>
+          <Chip label="Production Companies" sx={{ ...chip }} color="primary" />
+        </li>
+        {movie.production_companies.map((c) => (
+          <li key={c.id}>
+            <Link to={`/company/${c.id}`} style={{ textDecoration: "none" }}>
+              <Chip label={c.name} sx={{ ...chip }} />
+            </Link>
+          </li>
+        ))}
+      </Paper>
+
+
       {/* Runtime, Revenue, Rating, Release */}
       <Paper component="ul" sx={{ ...root }}>
         <Chip icon={<AccessTimeIcon />} label={`${movie.runtime} min.`} />
