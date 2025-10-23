@@ -4,6 +4,8 @@ import Spinner from "../components/spinner";
 import { useQuery } from "@tanstack/react-query";
 import { getTopRated } from "../api/tmdb-api";
 import AddToFavoritesIcon from "../components/cardIcons/addToFavorites";
+import MustWatchToggleIcon from "../components/cardIcons/mustWatchToggle";
+
 
 const TopRatedMoviesPage = () => {
   const { data, error, isPending, isError } = useQuery({
@@ -20,7 +22,12 @@ const TopRatedMoviesPage = () => {
     <PageTemplate
       title="Top Rated Movies"
       movies={movies}
-      action={(movie) => <AddToFavoritesIcon movie={movie} />}
+      action={(movie) => (
+        <>
+          <AddToFavoritesIcon movie={movie} />
+          <MustWatchToggleIcon movie={movie} />
+        </>
+      )}
     />
   );
 };

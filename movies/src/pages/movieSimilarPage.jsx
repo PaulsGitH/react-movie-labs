@@ -4,6 +4,7 @@ import { useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { getSimilarMovies } from "../api/tmdb-api";
 import Spinner from "../components/spinner";
+import MustWatchToggleIcon from "../components/cardIcons/mustWatchToggle";
 
 const MovieSimilarPage = () => {
   const { id } = useParams();
@@ -20,9 +21,14 @@ const MovieSimilarPage = () => {
 
   return (
     <PageTemplate
-      title="Similar Movies"
+      title="Popular Movies"
       movies={movies}
-      action={() => null}
+      action={(movie) => (
+        <>
+          <AddToFavoritesIcon movie={movie} />
+          <MustWatchToggleIcon movie={movie} />
+        </>
+      )}
     />
   );
 };
