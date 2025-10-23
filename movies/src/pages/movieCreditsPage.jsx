@@ -9,22 +9,12 @@ import MovieCredits from "../components/movieCredits";
 const MovieCreditsPage = () => {
   const { id } = useParams();
 
-  const {
-    data: movie,
-    error: movieError,
-    isPending: moviePending,
-    isError: movieIsError,
-  } = useQuery({
+  const {data: movie, error: movieError, isPending: moviePending, isError: movieIsError,} = useQuery({
     queryKey: ["movie", { id }],
     queryFn: getMovie,
   });
 
-  const {
-    data: credits,
-    error: credError,
-    isPending: credPending,
-    isError: credIsError,
-  } = useQuery({
+  const {data: credits, error: credError, isPending: credPending, isError: credIsError,} = useQuery({
     queryKey: ["credits", { id }],
     queryFn: getMovieCredits,
   });
