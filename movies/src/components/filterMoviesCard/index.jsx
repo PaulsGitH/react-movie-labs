@@ -53,6 +53,7 @@ export default function FilterMoviesCard(props) {
   const handleRatingChange = (e) => handleChange(e, "rating", e.target.value);
   const handleLanguageChange = (e) => handleChange(e, "language", e.target.value);
   const handleVotesChange = (e) => handleChange(e, "votes", e.target.value);
+  const handleSortChange = (e) => handleChange(e, "sort", e.target.value);
 
   return (
     <Card sx={{ backgroundColor: "rgb(204, 204, 0)" }} variant="outlined">
@@ -137,6 +138,19 @@ export default function FilterMoviesCard(props) {
           onChange={handleVotesChange}
           inputProps={{ min: 0, step: 10 }}
         />
+
+        <FormControl sx={{ ...formControl }}>
+          <InputLabel id="sortby-label">Sort by</InputLabel>
+          <Select
+            labelId="sortby-label"
+            id="sortby-select"
+            value={props.sortOption || "title-asc"}
+            onChange={handleSortChange}
+          >
+            <MenuItem value="title-asc">Title (A–Z)</MenuItem>
+            <MenuItem value="title-desc">Title (Z–A)</MenuItem>
+          </Select>
+        </FormControl>
       </CardContent>
 
       <CardMedia sx={{ height: 300 }} image={img} title="Filter" />

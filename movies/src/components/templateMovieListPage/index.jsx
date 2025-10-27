@@ -11,27 +11,31 @@ function MovieListPageTemplate({ movies, title, action }) {
   const [ratingFilter, setRatingFilter] = useState("");
   const [languageFilter, setLanguageFilter] = useState("all");
   const [voteCountFilter, setVoteCountFilter] = useState("");
+  const [sortOption, setSortOption] = useState("title-asc");
 
   const genreId = Number(genreFilter);
-  const minRating = ratingFilter === "" ? 0 : Number(ratingFilter);
-  const yearText = (yearFilter || "").toString().trim();
-  const langCode = (languageFilter || "all").toLowerCase();
-  const minVotes = voteCountFilter === "" ? 0 : Number(voteCountFilter);
 
   let displayedMovies = movies
-    .filter((m) => m.title.toLowerCase().search(nameFilter.toLowerCase()) !== -1)
+    .filter((m) => m.title.toLowerCase().includes(nameFilter.toLowerCase()))
     .filter((m) => (genreId > 0 ? m.genre_ids?.includes(genreId) : true))
-    .filter((m) => {
-      if (!yearText) return true;
-      const y = (m.release_date || "").slice(0, 4);
-      return y === yearText;
-    })
-    .filter((m) => Number(m.vote_average || 0) >= minRating)
-    .filter((m) => {
-      if (langCode === "all") return true;
-      return (m.original_language || "").toLowerCase() === langCode;
-    })
-    .filter((m) => Number(m.vote_count || 0) >= minVotes);
+    .filter((m) => (yearFilter ? (m.release_date || "").startsWith(String(yearFilter)) : true))
+    .filter((m) => (ratingFilter ? Number(m.vote_average) >= Number(ratingFilter) : true))
+    .filter((m) =>
+      languageFilter && languageFilter !== "all"
+        ? (m.original_language || "").toLowerCase() === languageFilter.toLowerCase()
+        : true
+    )
+    .filter((m) => (voteCountFilter ? Number(m.vote_count) >= Number(voteCountFilter) : true));
+
+  if (sortOption === "title-asc") {
+    displayedMovies = [...displayedMovies].sort((a, b) =>
+      a.title.localeCompare(b.title)
+    );
+  } else if (sortOption === "title-desc") {
+    displayedMovies = [...displayedMovies].sort((a, b) =>
+      b.title.localeCompare(a.title)
+    );
+  }
 
   const handleChange = (type, value) => {
     if (type === "name") setNameFilter(value);
@@ -40,6 +44,7 @@ function MovieListPageTemplate({ movies, title, action }) {
     else if (type === "rating") setRatingFilter(value);
     else if (type === "language") setLanguageFilter(value);
     else if (type === "votes") setVoteCountFilter(value);
+    else if (type === "sort") setSortOption(value);
   };
 
   return (
@@ -61,9 +66,10 @@ function MovieListPageTemplate({ movies, title, action }) {
             ratingFilter={ratingFilter}
             languageFilter={languageFilter}
             voteCountFilter={voteCountFilter}
+            sortOption={sortOption}
           />
         </Grid>
-        <MovieList action={action} movies={displayedMovies}></MovieList>
+        <MovieList action={action} movies={displayedMovies} />
       </Grid>
     </Grid>
   );
