@@ -1,63 +1,59 @@
-import React from "react";
+import React, { useState } from "react";
 import PageTemplate from "../components/templateMovieListPage";
 import Spinner from "../components/spinner";
 import { useQuery } from "@tanstack/react-query";
-import { useSearchParams } from "react-router";
-import { searchMovies } from "../api/tmdb-api";
-import AddToFavoritesIcon from "../components/cardIcons/addToFavorites";
+import { getSearchMovies } from "../api/tmdb-api";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
+import AddToFavoritesIcon from "../components/cardIcons/addToFavorites";
+import MustWatchToggleIcon from "../components/cardIcons/mustWatchToggle";
+
+const MIN_LEN = 2;
 
 const SearchMoviesPage = () => {
-  const [params, setParams] = useSearchParams();
-  const query = params.get("q") || "";
+  const [q, setQ] = useState("");
 
   const { data, error, isPending, isError } = useQuery({
-    queryKey: ["search", { query }],
-    queryFn: searchMovies,
-    enabled: query.trim().length >= 2,
+    queryKey: ["search", { q }],
+    queryFn: getSearchMovies,
+    enabled: q.trim().length >= MIN_LEN,
+    placeholderData: { results: [] },
+    retry: false,
   });
 
-  const movies = data?.results || [];
-
-  const handleChange = (e) => {
-    const v = e.target.value;
-    if (v) setParams({ q: v });
-    else setParams({});
-  };
+  const movies = (data && data.results) || [];
 
   return (
     <>
-      <Box sx={{ px: 2, pt: 2 }}>
-        <Typography variant="h5" component="h2" sx={{ mb: 1 }}>
-          Search Movies
-        </Typography>
+      <Box sx={{ p: 2 }}>
         <TextField
           fullWidth
-          id="search-movies-input"
-          label="Type at least 2 characters"
+          label="Search TMDB"
           variant="outlined"
-          value={query}
-          onChange={handleChange}
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          helperText={
+            q.trim().length < MIN_LEN
+              ? `Type at least ${MIN_LEN} characters to search`
+              : ""
+          }
         />
       </Box>
 
-      {query.trim().length < 2 ? (
-        <Box sx={{ px: 2, py: 4 }}>
-          <Typography variant="body1">
-            Enter at least two characters to search TMDB.
-          </Typography>
-        </Box>
-      ) : isPending ? (
+      {q.trim().length >= MIN_LEN && isPending ? (
         <Spinner />
       ) : isError ? (
         <h1>{error.message}</h1>
       ) : (
         <PageTemplate
-          title={`Results for "${query}"`}
+          title="Search Results"
           movies={movies}
-          action={(movie) => <AddToFavoritesIcon movie={movie} />}
+          action={(movie) => (
+            <>
+              <AddToFavoritesIcon movie={movie} />
+              <MustWatchToggleIcon movie={movie} />
+            </>
+          )}
         />
       )}
     </>

@@ -306,10 +306,19 @@ export const getLanguages = () => {
     });
 };
 
-export const searchMovies = ({ queryKey }) => {
-  const [, { query }] = queryKey;
+export const getSearchMovies = ({ queryKey }) => {
+  const [, params] = queryKey;
+  const q = (params?.q || "").trim();
+
+  if (q.length < 2) {
+    // Return a TMDB-like shape so callers can safely read `data.results`
+    return Promise.resolve({ results: [] });
+  }
+
   return fetch(
-    `https://api.themoviedb.org/3/search/movie?api_key=${import.meta.env.VITE_TMDB_KEY}&language=en-US&include_adult=false&query=${encodeURIComponent(query)}`
+    `https://api.themoviedb.org/3/search/movie?api_key=${
+      import.meta.env.VITE_TMDB_KEY
+    }&language=en-US&query=${encodeURIComponent(q)}&page=1&include_adult=false`
   )
     .then((response) => {
       if (!response.ok) {
