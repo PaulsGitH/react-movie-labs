@@ -57,6 +57,14 @@ function MovieListPageTemplate({ movies, title, action }) {
     displayedMovies = [...displayedMovies].sort(
       (a, b) => new Date(a.release_date) - new Date(b.release_date)
     );
+  } else if (sortOption === "rating-high") {
+    displayedMovies = [...displayedMovies].sort(
+      (a, b) => Number(b.vote_average) - Number(a.vote_average)
+    );
+  } else if (sortOption === "rating-low") {
+    displayedMovies = [...displayedMovies].sort(
+      (a, b) => Number(a.vote_average) - Number(b.vote_average)
+    );
   }
 
   const handleChange = (type, value) => {
