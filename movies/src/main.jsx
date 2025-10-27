@@ -20,6 +20,7 @@ import MovieCreditsPage from "./pages/movieCreditsPage";
 import PersonDetailsPage from "./pages/personDetailsPage";
 import CompanyDetailsPage from "./pages/companyDetailsPage";
 import MustWatchMoviesPage from "./pages/mustWatchMoviesPage";
+import SearchMoviesPage from "./pages/searchMoviesPage";
 
 
 const queryClient = new QueryClient({
@@ -53,6 +54,7 @@ const App = () => {
             <Route path="/company/:id" element={<CompanyDetailsPage />} />
             <Route path="/movies/:id" element={<MoviePage />} />
             <Route path="/movies/mustwatch" element={<MustWatchMoviesPage />} />
+            <Route path="/movies/search" element={<SearchMoviesPage />} />
             <Route path="/" element={<HomePage />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
