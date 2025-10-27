@@ -10,9 +10,9 @@ import SearchIcon from "@mui/icons-material/Search";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import img from "../../images/pexels-dziana-hasanbekava-5480827.jpg";
-import { getGenres } from "../../api/tmdb-api";
 import { useQuery } from "@tanstack/react-query";
 import Spinner from "../spinner";
+import { getGenres } from "../../api/tmdb-api";
 
 const formControl = {
   margin: 1,
@@ -43,11 +43,21 @@ export default function FilterMoviesCard(props) {
     e.preventDefault();
     props.onUserInput(type, value);
   };
+
   const handleTextChange = (e) => {
     handleChange(e, "name", e.target.value);
   };
+
   const handleGenreChange = (e) => {
     handleChange(e, "genre", e.target.value);
+  };
+
+  const handleYearChange = (e) => {
+    handleChange(e, "year", e.target.value);
+  };
+
+  const handleRatingChange = (e) => {
+    handleChange(e, "rating", e.target.value);
   };
 
   return (
@@ -62,15 +72,17 @@ export default function FilterMoviesCard(props) {
           <SearchIcon fontSize="large" />
           Filter the movies.
         </Typography>
+
         <TextField
           sx={{ ...formControl }}
           id="filled-search"
-          label="Search field"
+          label="Search by title"
           type="search"
           variant="filled"
           value={props.titleFilter}
           onChange={handleTextChange}
         />
+
         <FormControl sx={{ ...formControl }}>
           <InputLabel id="genre-label">Genre</InputLabel>
           <Select
@@ -89,8 +101,32 @@ export default function FilterMoviesCard(props) {
             })}
           </Select>
         </FormControl>
+
+        <TextField
+          sx={{ ...formControl }}
+          id="filter-year"
+          label="Release year"
+          type="number"
+          variant="filled"
+          value={props.yearFilter}
+          onChange={handleYearChange}
+          inputProps={{ min: 1900, max: 2100, step: 1 }}
+        />
+
+        <TextField
+          sx={{ ...formControl }}
+          id="filter-rating"
+          label="Minimum rating"
+          type="number"
+          variant="filled"
+          value={props.ratingFilter}
+          onChange={handleRatingChange}
+          inputProps={{ min: 0, max: 10, step: 0.1 }}
+        />
       </CardContent>
+
       <CardMedia sx={{ height: 300 }} image={img} title="Filter" />
+
       <CardContent>
         <Typography variant="h5" component="h1">
           <SearchIcon fontSize="large" />
