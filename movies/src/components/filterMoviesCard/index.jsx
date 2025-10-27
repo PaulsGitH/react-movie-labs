@@ -157,6 +157,8 @@ export default function FilterMoviesCard(props) {
             <MenuItem value="date-oldest">Release Date (Oldest)</MenuItem>
             <MenuItem value="rating-high">Rating (Highest)</MenuItem>
             <MenuItem value="rating-low">Rating (Lowest)</MenuItem>
+            <MenuItem value="popularity-high">Popularity (Most)</MenuItem>
+            <MenuItem value="popularity-low">Popularity (Least)</MenuItem>
           </Select>
         </FormControl>
       </CardContent>

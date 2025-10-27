@@ -65,6 +65,14 @@ function MovieListPageTemplate({ movies, title, action }) {
     displayedMovies = [...displayedMovies].sort(
       (a, b) => Number(a.vote_average) - Number(b.vote_average)
     );
+  } else if (sortOption === "popularity-high") {
+    displayedMovies = [...displayedMovies].sort(
+      (a, b) => Number(b.popularity) - Number(a.popularity)
+    );
+  } else if (sortOption === "popularity-low") {
+    displayedMovies = [...displayedMovies].sort(
+      (a, b) => Number(a.popularity) - Number(b.popularity)
+    );
   }
 
   const handleChange = (type, value) => {
