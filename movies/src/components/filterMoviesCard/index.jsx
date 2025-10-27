@@ -12,7 +12,7 @@ import Select from "@mui/material/Select";
 import img from "../../images/pexels-dziana-hasanbekava-5480827.jpg";
 import { useQuery } from "@tanstack/react-query";
 import Spinner from "../spinner";
-import { getGenres } from "../../api/tmdb-api";
+import { getGenres, getLanguages } from "../../api/tmdb-api";
 
 const formControl = {
   margin: 1,
@@ -21,52 +21,40 @@ const formControl = {
 };
 
 export default function FilterMoviesCard(props) {
-  const { data, error, isPending, isError } = useQuery({
+  const { data: genresData, error: gErr, isPending: gPend, isError: gIsErr } = useQuery({
     queryKey: ["genres"],
     queryFn: getGenres,
   });
 
-  if (isPending) {
-    return <Spinner />;
-  }
+  const { data: langsData, error: lErr, isPending: lPend, isError: lIsErr } = useQuery({
+    queryKey: ["languages"],
+    queryFn: getLanguages,
+  });
 
-  if (isError) {
-    return <h1>{error.message}</h1>;
-  }
+  if (gPend || lPend) return <Spinner />;
+  if (gIsErr) return <h1>{gErr.message}</h1>;
+  if (lIsErr) return <h1>{lErr.message}</h1>;
 
-  const genres = data.genres;
+  const genres = genresData.genres;
   if (genres[0].name !== "All") {
     genres.unshift({ id: "0", name: "All" });
   }
+
+  const languages = [{ iso_639_1: "all", english_name: "All" }, ...langsData];
 
   const handleChange = (e, type, value) => {
     e.preventDefault();
     props.onUserInput(type, value);
   };
 
-  const handleTextChange = (e) => {
-    handleChange(e, "name", e.target.value);
-  };
-
-  const handleGenreChange = (e) => {
-    handleChange(e, "genre", e.target.value);
-  };
-
-  const handleYearChange = (e) => {
-    handleChange(e, "year", e.target.value);
-  };
-
-  const handleRatingChange = (e) => {
-    handleChange(e, "rating", e.target.value);
-  };
+  const handleTextChange = (e) => handleChange(e, "name", e.target.value);
+  const handleGenreChange = (e) => handleChange(e, "genre", e.target.value);
+  const handleYearChange = (e) => handleChange(e, "year", e.target.value);
+  const handleRatingChange = (e) => handleChange(e, "rating", e.target.value);
+  const handleLanguageChange = (e) => handleChange(e, "language", e.target.value);
 
   return (
-    <Card
-      sx={{
-        backgroundColor: "rgb(204, 204, 0)",
-      }}
-      variant="outlined"
-    >
+    <Card sx={{ backgroundColor: "rgb(204, 204, 0)" }} variant="outlined">
       <CardContent>
         <Typography variant="h5" component="h1">
           <SearchIcon fontSize="large" />
@@ -92,13 +80,11 @@ export default function FilterMoviesCard(props) {
             value={props.genreFilter}
             onChange={handleGenreChange}
           >
-            {genres.map((genre) => {
-              return (
-                <MenuItem key={genre.id} value={genre.id}>
-                  {genre.name}
-                </MenuItem>
-              );
-            })}
+            {genres.map((genre) => (
+              <MenuItem key={genre.id} value={genre.id}>
+                {genre.name}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
 
@@ -123,6 +109,22 @@ export default function FilterMoviesCard(props) {
           onChange={handleRatingChange}
           inputProps={{ min: 0, max: 10, step: 0.1 }}
         />
+
+        <FormControl sx={{ ...formControl }}>
+          <InputLabel id="language-label">Original language</InputLabel>
+          <Select
+            labelId="language-label"
+            id="language-select"
+            value={props.languageFilter}
+            onChange={handleLanguageChange}
+          >
+            {languages.map((lang) => (
+              <MenuItem key={lang.iso_639_1} value={lang.iso_639_1}>
+                {lang.english_name || lang.name || lang.iso_639_1.toUpperCase()}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
       </CardContent>
 
       <CardMedia sx={{ height: 300 }} image={img} title="Filter" />

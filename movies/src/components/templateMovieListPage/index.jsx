@@ -9,26 +9,25 @@ function MovieListPageTemplate({ movies, title, action }) {
   const [genreFilter, setGenreFilter] = useState("0");
   const [yearFilter, setYearFilter] = useState("");
   const [ratingFilter, setRatingFilter] = useState("");
+  const [languageFilter, setLanguageFilter] = useState("all");
 
   const genreId = Number(genreFilter);
   const minRating = ratingFilter === "" ? 0 : Number(ratingFilter);
   const yearText = (yearFilter || "").toString().trim();
+  const langCode = (languageFilter || "all").toLowerCase();
 
   let displayedMovies = movies
-    .filter((m) => {
-      return m.title.toLowerCase().search(nameFilter.toLowerCase()) !== -1;
-    })
-    .filter((m) => {
-      return genreId > 0 ? m.genre_ids?.includes(genreId) : true;
-    })
+    .filter((m) => m.title.toLowerCase().search(nameFilter.toLowerCase()) !== -1)
+    .filter((m) => (genreId > 0 ? m.genre_ids?.includes(genreId) : true))
     .filter((m) => {
       if (!yearText) return true;
       const y = (m.release_date || "").slice(0, 4);
       return y === yearText;
     })
+    .filter((m) => Number(m.vote_average || 0) >= minRating)
     .filter((m) => {
-      const v = Number(m.vote_average || 0);
-      return v >= minRating;
+      if (langCode === "all") return true;
+      return (m.original_language || "").toLowerCase() === langCode;
     });
 
   const handleChange = (type, value) => {
@@ -36,6 +35,7 @@ function MovieListPageTemplate({ movies, title, action }) {
     else if (type === "genre") setGenreFilter(value);
     else if (type === "year") setYearFilter(value);
     else if (type === "rating") setRatingFilter(value);
+    else if (type === "language") setLanguageFilter(value);
   };
 
   return (
@@ -55,6 +55,7 @@ function MovieListPageTemplate({ movies, title, action }) {
             genreFilter={genreFilter}
             yearFilter={yearFilter}
             ratingFilter={ratingFilter}
+            languageFilter={languageFilter}
           />
         </Grid>
         <MovieList action={action} movies={displayedMovies}></MovieList>
