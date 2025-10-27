@@ -21,15 +21,17 @@ const formControl = {
 };
 
 export default function FilterMoviesCard(props) {
-  const { data: genresData, error: gErr, isPending: gPend, isError: gIsErr } = useQuery({
-    queryKey: ["genres"],
-    queryFn: getGenres,
-  });
+  const { data: genresData, error: gErr, isPending: gPend, isError: gIsErr } =
+    useQuery({
+      queryKey: ["genres"],
+      queryFn: getGenres,
+    });
 
-  const { data: langsData, error: lErr, isPending: lPend, isError: lIsErr } = useQuery({
-    queryKey: ["languages"],
-    queryFn: getLanguages,
-  });
+  const { data: langsData, error: lErr, isPending: lPend, isError: lIsErr } =
+    useQuery({
+      queryKey: ["languages"],
+      queryFn: getLanguages,
+    });
 
   if (gPend || lPend) return <Spinner />;
   if (gIsErr) return <h1>{gErr.message}</h1>;
@@ -51,9 +53,9 @@ export default function FilterMoviesCard(props) {
   const handleGenreChange = (e) => handleChange(e, "genre", e.target.value);
   const handleYearChange = (e) => handleChange(e, "year", e.target.value);
   const handleRatingChange = (e) => handleChange(e, "rating", e.target.value);
-  const handleLanguageChange = (e) => handleChange(e, "language", e.target.value);
+  const handleLanguageChange = (e) =>
+    handleChange(e, "language", e.target.value);
   const handleVotesChange = (e) => handleChange(e, "votes", e.target.value);
-  const handleSortChange = (e) => handleChange(e, "sort", e.target.value);
 
   return (
     <Card sx={{ backgroundColor: "rgb(204, 204, 0)" }} variant="outlined">
@@ -122,7 +124,9 @@ export default function FilterMoviesCard(props) {
           >
             {languages.map((lang) => (
               <MenuItem key={lang.iso_639_1} value={lang.iso_639_1}>
-                {lang.english_name || lang.name || lang.iso_639_1.toUpperCase()}
+                {lang.english_name ||
+                  lang.name ||
+                  lang.iso_639_1.toUpperCase()}
               </MenuItem>
             ))}
           </Select>
@@ -145,10 +149,12 @@ export default function FilterMoviesCard(props) {
             labelId="sortby-label"
             id="sortby-select"
             value={props.sortOption || "title-asc"}
-            onChange={handleSortChange}
+            onChange={(e) => props.onUserInput("sort", e.target.value)}
           >
             <MenuItem value="title-asc">Title (A–Z)</MenuItem>
             <MenuItem value="title-desc">Title (Z–A)</MenuItem>
+            <MenuItem value="date-newest">Release Date (Newest)</MenuItem>
+            <MenuItem value="date-oldest">Release Date (Oldest)</MenuItem>
           </Select>
         </FormControl>
       </CardContent>

@@ -16,16 +16,30 @@ function MovieListPageTemplate({ movies, title, action }) {
   const genreId = Number(genreFilter);
 
   let displayedMovies = movies
-    .filter((m) => m.title.toLowerCase().includes(nameFilter.toLowerCase()))
-    .filter((m) => (genreId > 0 ? m.genre_ids?.includes(genreId) : true))
-    .filter((m) => (yearFilter ? (m.release_date || "").startsWith(String(yearFilter)) : true))
-    .filter((m) => (ratingFilter ? Number(m.vote_average) >= Number(ratingFilter) : true))
-    .filter((m) =>
-      languageFilter && languageFilter !== "all"
-        ? (m.original_language || "").toLowerCase() === languageFilter.toLowerCase()
-        : true
-    )
-    .filter((m) => (voteCountFilter ? Number(m.vote_count) >= Number(voteCountFilter) : true));
+    .filter((m) => {
+      return m.title.toLowerCase().search(nameFilter.toLowerCase()) !== -1;
+    })
+    .filter((m) => {
+      return genreId > 0 ? m.genre_ids?.includes(genreId) : true;
+    })
+    .filter((m) => {
+      if (!yearFilter) return true;
+      if (!m.release_date) return false;
+      return m.release_date.slice(0, 4) === String(yearFilter);
+    })
+    .filter((m) => {
+      if (!ratingFilter) return true;
+      return Number(m.vote_average) >= Number(ratingFilter);
+    })
+    .filter((m) => {
+      if (!voteCountFilter) return true;
+      return Number(m.vote_count) >= Number(voteCountFilter);
+    })
+    .filter((m) => {
+      if (!languageFilter || languageFilter === "all") return true;
+      return (m.original_language || "").toLowerCase() ===
+        String(languageFilter).toLowerCase();
+    });
 
   if (sortOption === "title-asc") {
     displayedMovies = [...displayedMovies].sort((a, b) =>
@@ -34,6 +48,14 @@ function MovieListPageTemplate({ movies, title, action }) {
   } else if (sortOption === "title-desc") {
     displayedMovies = [...displayedMovies].sort((a, b) =>
       b.title.localeCompare(a.title)
+    );
+  } else if (sortOption === "date-newest") {
+    displayedMovies = [...displayedMovies].sort(
+      (a, b) => new Date(b.release_date) - new Date(a.release_date)
+    );
+  } else if (sortOption === "date-oldest") {
+    displayedMovies = [...displayedMovies].sort(
+      (a, b) => new Date(a.release_date) - new Date(b.release_date)
     );
   }
 
@@ -69,7 +91,7 @@ function MovieListPageTemplate({ movies, title, action }) {
             sortOption={sortOption}
           />
         </Grid>
-        <MovieList action={action} movies={displayedMovies} />
+        <MovieList action={action} movies={displayedMovies}></MovieList>
       </Grid>
     </Grid>
   );
