@@ -52,6 +52,7 @@ export default function FilterMoviesCard(props) {
   const handleYearChange = (e) => handleChange(e, "year", e.target.value);
   const handleRatingChange = (e) => handleChange(e, "rating", e.target.value);
   const handleLanguageChange = (e) => handleChange(e, "language", e.target.value);
+  const handleVotesChange = (e) => handleChange(e, "votes", e.target.value);
 
   return (
     <Card sx={{ backgroundColor: "rgb(204, 204, 0)" }} variant="outlined">
@@ -125,6 +126,17 @@ export default function FilterMoviesCard(props) {
             ))}
           </Select>
         </FormControl>
+
+        <TextField
+          sx={{ ...formControl }}
+          id="filter-votes"
+          label="Minimum vote count"
+          type="number"
+          variant="filled"
+          value={props.voteCountFilter}
+          onChange={handleVotesChange}
+          inputProps={{ min: 0, step: 10 }}
+        />
       </CardContent>
 
       <CardMedia sx={{ height: 300 }} image={img} title="Filter" />

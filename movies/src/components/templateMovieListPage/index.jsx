@@ -10,11 +10,13 @@ function MovieListPageTemplate({ movies, title, action }) {
   const [yearFilter, setYearFilter] = useState("");
   const [ratingFilter, setRatingFilter] = useState("");
   const [languageFilter, setLanguageFilter] = useState("all");
+  const [voteCountFilter, setVoteCountFilter] = useState("");
 
   const genreId = Number(genreFilter);
   const minRating = ratingFilter === "" ? 0 : Number(ratingFilter);
   const yearText = (yearFilter || "").toString().trim();
   const langCode = (languageFilter || "all").toLowerCase();
+  const minVotes = voteCountFilter === "" ? 0 : Number(voteCountFilter);
 
   let displayedMovies = movies
     .filter((m) => m.title.toLowerCase().search(nameFilter.toLowerCase()) !== -1)
@@ -28,7 +30,8 @@ function MovieListPageTemplate({ movies, title, action }) {
     .filter((m) => {
       if (langCode === "all") return true;
       return (m.original_language || "").toLowerCase() === langCode;
-    });
+    })
+    .filter((m) => Number(m.vote_count || 0) >= minVotes);
 
   const handleChange = (type, value) => {
     if (type === "name") setNameFilter(value);
@@ -36,6 +39,7 @@ function MovieListPageTemplate({ movies, title, action }) {
     else if (type === "year") setYearFilter(value);
     else if (type === "rating") setRatingFilter(value);
     else if (type === "language") setLanguageFilter(value);
+    else if (type === "votes") setVoteCountFilter(value);
   };
 
   return (
@@ -56,6 +60,7 @@ function MovieListPageTemplate({ movies, title, action }) {
             yearFilter={yearFilter}
             ratingFilter={ratingFilter}
             languageFilter={languageFilter}
+            voteCountFilter={voteCountFilter}
           />
         </Grid>
         <MovieList action={action} movies={displayedMovies}></MovieList>
