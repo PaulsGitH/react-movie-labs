@@ -16,39 +16,25 @@ function MovieListPageTemplate({ movies, title, action }) {
   const genreId = Number(genreFilter);
 
   let displayedMovies = movies
-    .filter((m) => {
-      return m.title.toLowerCase().search(nameFilter.toLowerCase()) !== -1;
-    })
-    .filter((m) => {
-      return genreId > 0 ? m.genre_ids?.includes(genreId) : true;
-    })
+    .filter((m) => m.title.toLowerCase().includes(nameFilter.toLowerCase()))
+    .filter((m) => (genreId > 0 ? m.genre_ids?.includes(genreId) : true))
     .filter((m) => {
       if (!yearFilter) return true;
       if (!m.release_date) return false;
       return m.release_date.slice(0, 4) === String(yearFilter);
     })
-    .filter((m) => {
-      if (!ratingFilter) return true;
-      return Number(m.vote_average) >= Number(ratingFilter);
-    })
-    .filter((m) => {
-      if (!voteCountFilter) return true;
-      return Number(m.vote_count) >= Number(voteCountFilter);
-    })
-    .filter((m) => {
-      if (!languageFilter || languageFilter === "all") return true;
-      return (m.original_language || "").toLowerCase() ===
-        String(languageFilter).toLowerCase();
-    });
+    .filter((m) => (!ratingFilter ? true : Number(m.vote_average) >= Number(ratingFilter)))
+    .filter((m) => (!voteCountFilter ? true : Number(m.vote_count) >= Number(voteCountFilter)))
+    .filter((m) =>
+      !languageFilter || languageFilter === "all"
+        ? true
+        : String(m.original_language || "").toLowerCase() === String(languageFilter).toLowerCase()
+    );
 
   if (sortOption === "title-asc") {
-    displayedMovies = [...displayedMovies].sort((a, b) =>
-      a.title.localeCompare(b.title)
-    );
+    displayedMovies = [...displayedMovies].sort((a, b) => a.title.localeCompare(b.title));
   } else if (sortOption === "title-desc") {
-    displayedMovies = [...displayedMovies].sort((a, b) =>
-      b.title.localeCompare(a.title)
-    );
+    displayedMovies = [...displayedMovies].sort((a, b) => b.title.localeCompare(a.title));
   } else if (sortOption === "date-newest") {
     displayedMovies = [...displayedMovies].sort(
       (a, b) => new Date(b.release_date) - new Date(a.release_date)
@@ -86,15 +72,16 @@ function MovieListPageTemplate({ movies, title, action }) {
   };
 
   return (
-    <Grid container>
+    <Grid container spacing={3} alignItems="flex-start">
       <Grid size={12}>
         <Header title={title} />
       </Grid>
-      <Grid container sx={{ flex: "1 1 500px" }}>
+
+      <Grid container spacing={3} alignItems="flex-start" sx={{ flex: "1 1 auto", px: { xs: 1, md: 2 } }}>
         <Grid
           key="find"
           size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }}
-          sx={{ padding: "20px" }}
+          sx={{ p: 2, alignSelf: "flex-start" }}
         >
           <FilterCard
             onUserInput={handleChange}
@@ -107,9 +94,13 @@ function MovieListPageTemplate({ movies, title, action }) {
             sortOption={sortOption}
           />
         </Grid>
-        <MovieList action={action} movies={displayedMovies}></MovieList>
+
+        <Grid size={{ xs: 12, sm: 6, md: 8, lg: 9, xl: 10 }} sx={{ alignSelf: "flex-start" }}>
+          <MovieList movies={displayedMovies} action={action} />
+        </Grid>
       </Grid>
     </Grid>
   );
 }
+
 export default MovieListPageTemplate;

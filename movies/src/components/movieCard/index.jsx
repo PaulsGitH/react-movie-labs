@@ -18,57 +18,114 @@ import { MoviesContext } from "../../contexts/moviesContext";
 export default function MovieCard({ movie, action }) {
   const { favorites } = useContext(MoviesContext);
 
-  if (favorites.find((id) => id === movie.id)) {
-    movie.favorite = true;
-  } else {
-    movie.favorite = false;
-  }
+  const isFav = favorites.includes(movie.id);
+  const poster = movie.poster_path
+    ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
+    : img;
 
   return (
-    <Card>
+    <Card
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        borderRadius: 4,
+        overflow: "hidden",
+        bgcolor: "background.paper",
+      }}
+    >
       <CardHeader
         avatar={
-          movie.favorite ? (
-            <Avatar sx={{ backgroundColor: "red" }}>
+          isFav ? (
+            <Avatar sx={{ bgcolor: "error.main" }}>
               <FavoriteIcon />
             </Avatar>
           ) : null
         }
         title={
-          <Typography variant="h5" component="p">
-            {movie.title}{" "}
+          <Typography
+            variant="h6"
+            component="p"
+            sx={{
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              lineHeight: 1.2,
+              fontWeight: 600,
+              color: "common.white",
+              paddingLeft: 0.5,
+              wordBreak: "break-word",
+            }}
+          >
+            {movie.title}
           </Typography>
         }
-        sx={{ textWrap: "nowrap" }}
+        sx={{
+          px: 2.5,
+          py: 1.25,
+          bgcolor: "rgba(0,0,0,0.55)",
+          backdropFilter: "blur(2px)",
+          "& .MuiCardHeader-content": { minWidth: 0 },
+        }}
       />
+
       <CardMedia
-        sx={{ height: 500 }}
-        image={
-          movie.poster_path
-            ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
-            : img
-        }
+        sx={{
+          height: 420,
+          backgroundSize: "cover",
+        }}
+        image={poster}
       />
-      <CardContent>
+
+      <CardContent sx={{ flexGrow: 1, pb: 1.5 }}>
         <Grid container>
-          <Grid size={{ xs: 6 }}>
-            <Typography variant="h6" component="p">
+          <Grid item xs={6}>
+            <Typography
+              variant="body2"
+              component="p"
+              sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+            >
               <CalendarIcon fontSize="small" />
-              {movie.release_date}
+              {movie.release_date || "—"}
             </Typography>
           </Grid>
-          <Grid size={{ xs: 6 }}>
-            <Typography variant="h6" component="p">
+          <Grid item xs={6}>
+            <Typography
+              variant="body2"
+              component="p"
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 0.5,
+                justifyContent: "flex-end",
+              }}
+            >
               <StarRateIcon fontSize="small" />
-              {"  "} {movie.vote_average}{" "}
+              {typeof movie.vote_average === "number"
+                ? movie.vote_average.toFixed(1)
+                : "—"}
             </Typography>
           </Grid>
         </Grid>
       </CardContent>
-      <CardActions disableSpacing>
+
+      <CardActions
+        disableSpacing
+        sx={{
+          mt: "auto",
+          px: 2,
+          pb: 2,
+          pt: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
         {action(movie)}
-        <Link to={`/movies/${movie.id}`}>
-          <Button variant="outlined" size="medium" color="primary">
+        <Link to={`/movies/${movie.id}`} style={{ textDecoration: "none" }}>
+          <Button variant="outlined" size="small" color="primary">
             More Info ...
           </Button>
         </Link>
