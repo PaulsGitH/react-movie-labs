@@ -115,12 +115,14 @@ export default function MovieCard({ movie, action }) {
         disableSpacing
         sx={{
           mt: "auto",
-          px: 2,
-          pb: 2,
+          pl: 0.9,
+          pr: 2.2,
+          pb: 2.4,
           pt: 0,
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
+          overflow: "hidden",
         }}
       >
         {action(movie)}
