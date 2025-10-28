@@ -374,3 +374,21 @@ export const getMoviesPage = ({ queryKey }) => {
       throw error;
     });
 };
+
+export const getNowPlayingMoviesPaged = ({ queryKey }) => {
+  const [, { page }] = queryKey;
+  return fetch(
+    `https://api.themoviedb.org/3/movie/now_playing?api_key=${import.meta.env.VITE_TMDB_KEY}&language=en-US&page=${page}`
+  )
+    .then((res) => {
+      if (!res.ok) {
+        return res.json().then((err) => {
+          throw new Error(err.status_message || "Something went wrong");
+        });
+      }
+      return res.json();
+    })
+    .catch((e) => {
+      throw e;
+    });
+};
