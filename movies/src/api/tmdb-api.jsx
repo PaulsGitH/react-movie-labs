@@ -133,9 +133,10 @@ export const getPopular = ({ page = 1 } = {}) => {
 };
 
 
-export const getTopRated = () => {
+export const getTopRatedPaged = ({ queryKey }) => {
+  const [, { page = 1 }] = queryKey;
   return fetch(
-    `https://api.themoviedb.org/3/movie/top_rated?api_key=${import.meta.env.VITE_TMDB_KEY}&language=en-US&page=1`
+    `https://api.themoviedb.org/3/movie/top_rated?api_key=${import.meta.env.VITE_TMDB_KEY}&language=en-US&page=${page}`
   )
     .then((response) => {
       if (!response.ok) {
@@ -149,6 +150,7 @@ export const getTopRated = () => {
       throw error;
     });
 };
+
 
 export const getNowPlayingMovies = () => {
   return fetch(
