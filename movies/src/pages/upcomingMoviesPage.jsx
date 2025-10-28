@@ -1,13 +1,13 @@
 import React from "react";
 import PageTemplate from "../components/templateMovieListPage";
-import Spinner from "../components/spinner";
 import { useQuery } from "@tanstack/react-query";
-import { useSearchParams } from "react-router";
+import Spinner from "../components/spinner";
+import { getUpcomingMoviesPaged } from "../api/tmdb-api";
+import AddToFavoritesIcon from "../components/cardIcons/addToFavorites";
+import MustWatchToggleIcon from "../components/cardIcons/mustWatchToggle";
 import Box from "@mui/material/Box";
 import Pagination from "@mui/material/Pagination";
-import { getUpcomingMoviesPaged } from "../api/tmdb-api";
-import PlaylistAdd from "../components/cardIcons/playlistAdd";
-import MustWatchToggleIcon from "../components/cardIcons/mustWatchToggle";
+import { useSearchParams } from "react-router";
 
 const UpcomingMoviesPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -32,7 +32,7 @@ const UpcomingMoviesPage = () => {
         movies={movies}
         action={(movie) => (
           <>
-            <PlaylistAdd movie={movie} />
+            <AddToFavoritesIcon movie={movie} />
             <MustWatchToggleIcon movie={movie} />
           </>
         )}
