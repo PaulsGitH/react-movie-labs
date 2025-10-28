@@ -1,6 +1,5 @@
 import React from "react";
 import Card from "@mui/material/Card";
-import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import InputLabel from "@mui/material/InputLabel";
@@ -11,7 +10,6 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Divider from "@mui/material/Divider";
 import Box from "@mui/material/Box";
-import img from "../../images/pexels-dziana-hasanbekava-5480827.jpg";
 import { useQuery } from "@tanstack/react-query";
 import Spinner from "../spinner";
 import { getGenres, getLanguages } from "../../api/tmdb-api";
@@ -23,16 +21,10 @@ const formControl = {
 
 export default function FilterMoviesCard(props) {
   const { data: genresData, error: gErr, isPending: gPend, isError: gIsErr } =
-    useQuery({
-      queryKey: ["genres"],
-      queryFn: getGenres,
-    });
+    useQuery({ queryKey: ["genres"], queryFn: getGenres });
 
   const { data: langsData, error: lErr, isPending: lPend, isError: lIsErr } =
-    useQuery({
-      queryKey: ["languages"],
-      queryFn: getLanguages,
-    });
+    useQuery({ queryKey: ["languages"], queryFn: getLanguages });
 
   if (gPend || lPend) return <Spinner />;
   if (gIsErr) return <h1>{gErr.message}</h1>;
@@ -42,7 +34,6 @@ export default function FilterMoviesCard(props) {
   if (genres[0].name !== "All") {
     genres.unshift({ id: "0", name: "All" });
   }
-
   const languages = [{ iso_639_1: "all", english_name: "All" }, ...langsData];
 
   const handleChange = (e, type, value) => {
@@ -54,8 +45,7 @@ export default function FilterMoviesCard(props) {
   const handleGenreChange = (e) => handleChange(e, "genre", e.target.value);
   const handleYearChange = (e) => handleChange(e, "year", e.target.value);
   const handleRatingChange = (e) => handleChange(e, "rating", e.target.value);
-  const handleLanguageChange = (e) =>
-    handleChange(e, "language", e.target.value);
+  const handleLanguageChange = (e) => handleChange(e, "language", e.target.value);
   const handleVotesChange = (e) => handleChange(e, "votes", e.target.value);
   const handleSortChange = (e) => handleChange(e, "sort", e.target.value);
 
@@ -215,8 +205,6 @@ export default function FilterMoviesCard(props) {
           inputProps={{ min: 0, step: 10 }}
         />
 
-        <Divider sx={{ my: 2, borderColor: "rgba(148,163,184,0.2)" }} />
-
         <FormControl
           sx={{
             ...formControl,
@@ -247,14 +235,6 @@ export default function FilterMoviesCard(props) {
             <MenuItem value="popularity-low">Popularity: Low to High</MenuItem>
           </Select>
         </FormControl>
-      </CardContent>
-
-      <CardMedia sx={{ height: 220 }} image={img} title="Filter" />
-
-      <CardContent sx={{ pt: 1.5 }}>
-        <Typography variant="h6" component="h2">
-          Refine and sort results
-        </Typography>
       </CardContent>
     </Card>
   );
