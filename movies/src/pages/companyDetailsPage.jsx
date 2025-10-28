@@ -1,24 +1,45 @@
 import React from "react";
 import { useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import { getCompany } from "../api/tmdb-api";
+import { getCompany, getCompanyMovies } from "../api/tmdb-api";
 import Spinner from "../components/spinner";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
+import MovieList from "../components/movieList";
+import AddToFavoritesIcon from "../components/cardIcons/addToFavorites";
+import MustWatchToggleIcon from "../components/cardIcons/mustWatchToggle";
 
 const CompanyDetailsPage = () => {
   const { id } = useParams();
 
-  const { data: company, error, isPending, isError } = useQuery({
+  const {
+    data: company,
+    error,
+    isPending,
+    isError,
+  } = useQuery({
     queryKey: ["company", { id }],
     queryFn: getCompany,
   });
 
-  if (isPending) return <Spinner />;
+  const {
+    data: companyMovies,
+    error: moviesError,
+    isPending: moviesPending,
+    isError: moviesIsError,
+  } = useQuery({
+    queryKey: ["company-movies", { id }],
+    queryFn: getCompanyMovies,
+  });
+
+  if (isPending || moviesPending) return <Spinner />;
   if (isError) return <Typography variant="h5">{error.message}</Typography>;
+  if (moviesIsError) return <Typography variant="h5">{moviesError.message}</Typography>;
+
+  const movies = companyMovies?.results || [];
 
   return (
     <Grid container spacing={3} sx={{ p: 2 }}>
@@ -77,6 +98,23 @@ const CompanyDetailsPage = () => {
             </Typography>
           )}
         </Paper>
+      </Grid>
+
+      <Grid item xs={12} sx={{ mt: 4 }}>
+        <Typography variant="h5" sx={{ mb: 2 }}>
+          Produced Movies
+        </Typography>
+        <Grid container>
+          <MovieList
+            movies={movies}
+            action={(movie) => (
+              <>
+                <AddToFavoritesIcon movie={movie} />
+                <MustWatchToggleIcon movie={movie} />
+              </>
+            )}
+          />
+        </Grid>
       </Grid>
     </Grid>
   );
