@@ -7,10 +7,11 @@ import Button from "@mui/material/Button";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import { styled } from "@mui/material/styles";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import Box from "@mui/material/Box";
 
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
@@ -22,6 +23,7 @@ const SiteHeader = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const menuOptions = [
     { label: "Home", path: "/" },
@@ -32,7 +34,7 @@ const SiteHeader = () => {
     { label: "Now Playing", path: "/movies/now-playing" },
     { label: "Must Watch", path: "/movies/mustwatch" },
     { label: "Search", path: "/movies/search" },
-    { label: "Search Actors", path: "/search/actors" },
+    { label: "Actors", path: "/search/actors" },
   ];
 
   const handleMenuSelect = (pageURL) => {
@@ -46,14 +48,27 @@ const SiteHeader = () => {
 
   return (
     <>
-      <AppBar position="fixed" color="secondary">
-        <Toolbar>
-          <Typography variant="h4" sx={{ flexGrow: 1 }}>
-            TMDB Client
-          </Typography>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            All you ever wanted to know about Movies!
-          </Typography>
+      <AppBar
+        position="fixed"
+        color="transparent"
+        elevation={0}
+        sx={{
+          backdropFilter: "blur(10px)",
+          backgroundImage:
+            "linear-gradient(90deg, rgba(124,58,237,0.9) 0%, rgba(34,211,238,0.9) 100%)",
+          boxShadow: "0 2px 10px rgba(0,0,0,0.25)",
+        }}
+      >
+        <Toolbar sx={{ minHeight: 72 }}>
+          <Box sx={{ display: "flex", alignItems: "baseline", gap: 2, flexGrow: 1 }}>
+            <Typography variant="h4" sx={{ fontWeight: 800 }}>
+              TMDB Client
+            </Typography>
+            <Typography variant="h6" sx={{ opacity: 0.9 }}>
+              All you ever wanted to know about Movies!
+            </Typography>
+          </Box>
+
           {isMobile ? (
             <>
               <IconButton
@@ -68,15 +83,9 @@ const SiteHeader = () => {
               <Menu
                 id="menu-appbar"
                 anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
                 keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
+                transformOrigin={{ vertical: "top", horizontal: "right" }}
                 open={open}
                 onClose={() => setAnchorEl(null)}
               >
@@ -84,6 +93,7 @@ const SiteHeader = () => {
                   <MenuItem
                     key={opt.label}
                     onClick={() => handleMenuSelect(opt.path)}
+                    selected={location.pathname === opt.path}
                   >
                     {opt.label}
                   </MenuItem>
@@ -92,15 +102,25 @@ const SiteHeader = () => {
             </>
           ) : (
             <>
-              {menuOptions.map((opt) => (
-                <Button
-                  key={opt.label}
-                  color="inherit"
-                  onClick={() => handleMenuSelect(opt.path)}
-                >
-                  {opt.label}
-                </Button>
-              ))}
+              {menuOptions.map((opt) => {
+                const active = location.pathname === opt.path;
+                return (
+                  <Button
+                    key={opt.label}
+                    color="inherit"
+                    onClick={() => handleMenuSelect(opt.path)}
+                    variant={active ? "contained" : "text"}
+                    sx={{
+                      mx: 0.5,
+                      bgcolor: active ? "rgba(255,255,255,0.15)" : "transparent",
+                      "&:hover": { bgcolor: "rgba(255,255,255,0.2)" },
+                      borderRadius: 10,
+                    }}
+                  >
+                    {opt.label}
+                  </Button>
+                );
+              })}
             </>
           )}
         </Toolbar>
@@ -111,3 +131,4 @@ const SiteHeader = () => {
 };
 
 export default SiteHeader;
+
