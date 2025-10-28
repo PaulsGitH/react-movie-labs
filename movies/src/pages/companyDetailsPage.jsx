@@ -41,6 +41,15 @@ const CompanyDetailsPage = () => {
 
   const movies = companyMovies?.results || [];
 
+  const years = movies
+    .map((m) => (m.release_date ? Number(m.release_date.slice(0, 4)) : null))
+    .filter((y) => Number.isFinite(y));
+  const minYear = years.length ? Math.min(...years) : null;
+  const maxYear = years.length ? Math.max(...years) : null;
+  const avgRating = movies.length
+    ? (movies.reduce((s, m) => s + (Number(m.vote_average) || 0), 0) / movies.length).toFixed(1)
+    : "—";
+
   return (
     <Grid container spacing={3} sx={{ p: 2 }}>
       <Grid item xs={12}>
@@ -70,15 +79,9 @@ const CompanyDetailsPage = () => {
           </Typography>
 
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            {company.headquarters && (
-              <Chip label={`HQ: ${company.headquarters}`} />
-            )}
-            {company.origin_country && (
-              <Chip label={`Country: ${company.origin_country}`} />
-            )}
-            {company.parent_company?.name && (
-              <Chip label={`Parent: ${company.parent_company.name}`} />
-            )}
+            {company.headquarters && <Chip label={`HQ: ${company.headquarters}`} />}
+            {company.origin_country && <Chip label={`Country: ${company.origin_country}`} />}
+            {company.parent_company?.name && <Chip label={`Parent: ${company.parent_company.name}`} />}
             {company.homepage && (
               <Button
                 variant="outlined"
@@ -100,7 +103,20 @@ const CompanyDetailsPage = () => {
         </Paper>
       </Grid>
 
-      <Grid item xs={12} sx={{ mt: 4 }}>
+      <Grid item xs={12}>
+        <Paper sx={{ p: 2 }}>
+          <Typography variant="h6" component="p" sx={{ mb: 2 }}>
+            Quick stats
+          </Typography>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <Chip label={`Movies: ${movies.length}`} />
+            <Chip label={`Average rating: ${avgRating}`} />
+            <Chip label={`Year range: ${minYear ?? "—"}${minYear && maxYear ? " – " : ""}${maxYear ?? ""}`} />
+          </div>
+        </Paper>
+      </Grid>
+
+      <Grid item xs={12} sx={{ mt: 2 }}>
         <Typography variant="h5" sx={{ mb: 2 }}>
           Produced Movies
         </Typography>
