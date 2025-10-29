@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getSearchMovies } from "../api/tmdb-api";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 import AddToFavoritesIcon from "../components/cardIcons/addToFavorites";
 import MustWatchToggleIcon from "../components/cardIcons/mustWatchToggle";
 
@@ -22,25 +23,29 @@ const SearchMoviesPage = () => {
   });
 
   const movies = (data && data.results) || [];
+  const shortQuery = q.trim().length < MIN_LEN;
 
   return (
     <>
-      <Box sx={{ p: 2 }}>
+      <Box sx={{ px: { xs: 2, md: 3 }, pt: 3 }}>
+        <Typography variant="h4" sx={{ mb: 2 }}>
+          Search by Movie
+        </Typography>
+
         <TextField
           fullWidth
-          label="Search TMDB"
-          variant="outlined"
+          placeholder="Enter movie title"
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          helperText={
-            q.trim().length < MIN_LEN
-              ? `Type at least ${MIN_LEN} characters to search`
-              : ""
-          }
+          variant="outlined"
         />
       </Box>
 
-      {q.trim().length >= MIN_LEN && isPending ? (
+      {shortQuery ? (
+        <Typography align="center" sx={{ mt: 6, opacity: 0.8 }}>
+          Start typing to see results.
+        </Typography>
+      ) : isPending ? (
         <Spinner />
       ) : isError ? (
         <h1>{error.message}</h1>
