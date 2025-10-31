@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PageTemplate from "../components/templateMovieListPage";
 import Spinner from "../components/spinner";
 import { useQuery } from "@tanstack/react-query";
@@ -8,11 +8,20 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import AddToFavoritesIcon from "../components/cardIcons/addToFavorites";
 import MustWatchToggleIcon from "../components/cardIcons/mustWatchToggle";
+import { useSearchParams } from "react-router";
 
 const MIN_LEN = 2;
 
 const SearchMoviesPage = () => {
-  const [q, setQ] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialQ = searchParams.get("q") || "";
+  const [q, setQ] = useState(initialQ);
+
+  useEffect(() => {
+    const query = q.trim();
+    if (query.length >= MIN_LEN) setSearchParams({ q: query });
+    else setSearchParams({});
+  }, [q, setSearchParams]);
 
   const { data, error, isPending, isError } = useQuery({
     queryKey: ["search", { q }],
@@ -29,7 +38,7 @@ const SearchMoviesPage = () => {
     <>
       <Box sx={{ px: { xs: 2, md: 3 }, pt: 3 }}>
         <Typography variant="h4" sx={{ mb: 2 }}>
-          Search by Movie
+          Search Movies
         </Typography>
 
         <TextField
