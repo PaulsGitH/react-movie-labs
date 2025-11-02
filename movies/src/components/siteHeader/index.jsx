@@ -62,10 +62,10 @@ const SiteHeader = () => {
         <Toolbar sx={{ minHeight: 72 }}>
           <Box sx={{ display: "flex", alignItems: "baseline", gap: 2, flexGrow: 1 }}>
             <Typography variant="h4" sx={{ fontWeight: 800 }}>
-              TMDB Client
+              NeonFlix
             </Typography>
             <Typography variant="h6" sx={{ opacity: 0.9 }}>
-              All you ever wanted to know about Movies!
+              Explore. Discover. Watch.
             </Typography>
           </Box>
 
